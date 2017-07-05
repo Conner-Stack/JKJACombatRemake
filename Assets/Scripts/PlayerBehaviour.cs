@@ -36,4 +36,6 @@ public class PlayerBehaviour : MonoBehaviour, IDamagable
     {
         playerRuntime.hp -= Damage / 10;
     }
+
+    
 }
