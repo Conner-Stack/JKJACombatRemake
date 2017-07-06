@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d44e12dddd2d48d40bd8110b0e71d29f, type: 3}
-  m_Name: New Player
+  m_Name: Player1
   m_EditorClassIdentifier: 
   playerName: Player 1
   hp: 100
-  movementSpeed: 25
+  movementSpeed: 15
   playerClass: 

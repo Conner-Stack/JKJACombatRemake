@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class PlayerInputBehaviour : MonoBehaviour
 {
-    public float walkSpeed = 0;
-    private bool jumping;
+    public float walkSpeed;
+    public float jumpHeight;
+    public bool jumping;
+    public bool grounded;
     private float previousY;
 
     void Start()
     {
         walkSpeed = GetComponent<PlayerBehaviour>().playerRuntime.movementSpeed;
+        jumping = false;
+        grounded = true;
     }
 
     void Update()
@@ -18,11 +22,16 @@ public class PlayerInputBehaviour : MonoBehaviour
         CheckInput();
     }
 
+    void FixedUpdate()
+    {
+        Jump();
+    }
+
     void CheckInput()
     {
         PlayerMove();
         MouseTurn();
-        Jump();
+        //Jump();
     }
 
     void PlayerMove()
@@ -30,8 +39,22 @@ public class PlayerInputBehaviour : MonoBehaviour
         // forward, backward, stafe
         var x = Input.GetAxis("Horizontal") * Time.deltaTime * walkSpeed;
         var z = Input.GetAxis("Vertical") * Time.deltaTime * walkSpeed;
+
+        // check for walking
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            z *= 0.33f;
+        }
+
+        //check for jump
+        if(jumping)
+        {
+            x *= 0.33f;
+            z *= 0.33f;
+        }
+
+        // apply movement
         transform.Translate(x, 0, z);
-        var force = new Vector3(x, 0, z);
     }
 
     void MouseTurn()
@@ -42,25 +65,42 @@ public class PlayerInputBehaviour : MonoBehaviour
     }
 
     void Jump()
-    {
-        if (jumping == false)
+    {        
+        if (grounded)
         {
-            jumping = true;
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                previousY = transform.position.y;
-            }
+                grounded = false;
+                jumping = true;
+            }          
         }
 
-        if (Input.GetKey(KeyCode.Space))
+        if (jumping)
         {
-            previousY = transform.position.y;
-            var jumpforce = previousY + Time.deltaTime;
-            transform.Translate(0, jumpforce, 0);
-        }
-        else
+            if (transform.position.y > previousY + jumpHeight)
+            {
+                jumping = false;
+                var fallForce = new Vector3(0, -10, 0);
+                GetComponent<Rigidbody>().velocity = fallForce;
+            }
+            if (Input.GetKey(KeyCode.Space))
+            {
+                var jumpForce = new Vector3(0, 15, 0);
+                GetComponent<Rigidbody>().velocity = jumpForce;
+            }
+            else
+            {
+                jumping = false;
+            }            
+        }        
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.CompareTag("Level"))
         {
-            jumping = false;
+            grounded = true;
+            Debug.Log("Landed");
         }
     }
 }
