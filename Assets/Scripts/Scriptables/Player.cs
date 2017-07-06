@@ -7,10 +7,6 @@ public class Player : ScriptableObject {
     public int hp;
     public float movementSpeed;
     public string playerClass;
-    public enum stance
-    {
-        light = 1,
-        medium = 2,
-        heavy = 3
-    }
+    public bool isHit;
+
 }

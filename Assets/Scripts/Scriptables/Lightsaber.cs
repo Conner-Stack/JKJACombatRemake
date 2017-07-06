@@ -8,5 +8,4 @@ public class Lightsaber : MonoBehaviour
     public int Damage;
     public float swingSpeed;
     public bool holster;
-
 }
